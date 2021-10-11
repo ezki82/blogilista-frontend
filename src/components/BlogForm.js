@@ -25,6 +25,9 @@ const BlogForm = ({ createBlog }) => {
             author: author,
             url: url
         })
+        setTitle('')
+        setAuthor('')
+        setUrl('')
 
     }
 
