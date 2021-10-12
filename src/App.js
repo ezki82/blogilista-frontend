@@ -25,7 +25,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setNotificationMessage({type: 'error', content:'wrong credentials'})
+      setNotificationMessage({ type: 'error', content:'wrong credentials' })
       setTimeout(() => {
         setNotificationMessage(null)
       }, 5000)
@@ -42,14 +42,14 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     const newBlog = await blogService.create(blogObject)
     setBlogs(blogs.concat(newBlog))
-    setNotificationMessage({type: 'info', content:`A new blog ${newBlog.title} by ${newBlog.author} added`})
-      setTimeout(() => {
-        setNotificationMessage(null)
-      }, 5000)
+    setNotificationMessage({ type: 'info', content:`A new blog ${newBlog.title} by ${newBlog.author} added` })
+    setTimeout(() => {
+      setNotificationMessage(null)
+    }, 5000)
   }
 
   const addLikeBlog = async (blogObject) => {
-    const likeAddedBlog = {...blogObject, likes: blogObject.likes + 1}
+    const likeAddedBlog = { ...blogObject, likes: blogObject.likes + 1 }
     await blogService.update(likeAddedBlog.id, likeAddedBlog)
     setBlogs(blogs.map((blog) => blog.id === blogObject.id ? likeAddedBlog : blog ))
   }

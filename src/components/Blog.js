@@ -23,15 +23,15 @@ const Blog = ({ blog, user, addLike, removeBlog }) => {
     removeBlog(blog)
   }
 
-  const hideDetailsVisible = {display: detailsVisible ? 'none' : ''}
-  const showDetailsVisible = {display: detailsVisible ? '' : 'none'}
+  const hideDetailsVisible = { display: detailsVisible ? 'none' : '' }
+  const showDetailsVisible = { display: detailsVisible ? '' : 'none' }
 
   return (
     <div style={blogStyle}>
       <div style={hideDetailsVisible}>
-        <h4>{blog.title} {blog.author}</h4> <button onClick={toggleDetails}>show details</button>          
-        </div>
-        <div style={showDetailsVisible}>
+        <h4>{blog.title} {blog.author}</h4> <button onClick={toggleDetails}>show details</button>
+      </div>
+      <div style={showDetailsVisible}>
         <h4>{blog.title} {blog.author}</h4> <button onClick={toggleDetails}>hide details</button> <br/>
         <p>
           url:{blog.url} <br/>
