@@ -18,10 +18,11 @@ describe('<Blog/>', () => {
   const user = {
     username: 'ttes'
   }
+  const addLike = jest.fn()
 
   beforeEach(() => {
     component = render(
-      <Blog blog={blog} user={user} />
+      <Blog blog={blog} user={user} addLike={addLike}/>
     )
   })
 
@@ -40,5 +41,17 @@ describe('<Blog/>', () => {
 
     const div = component.container.querySelector('.showDetails')
     expect(div).not.toHaveStyle('display: none')
+  })
+
+  test('function is called twice after two like clicks', () => {
+
+    const showDetailsButton = component.getByText('show details')
+    fireEvent.click(showDetailsButton)
+
+    const likeButton = component.getByText('like')
+    fireEvent.click(likeButton)
+    fireEvent.click(likeButton)
+
+    expect(addLike.mock.calls).toHaveLength(2)
   })
 })
