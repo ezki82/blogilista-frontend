@@ -35,7 +35,7 @@ describe('<Blog/>', () => {
     expect(div).toHaveStyle('display: none')
   })
 
-  test('url and likes ares hown after button is pressed', () => {
+  test('url and likes ares shown after button is pressed', () => {
     const button = component.getByText('show details')
     fireEvent.click(button)
 
