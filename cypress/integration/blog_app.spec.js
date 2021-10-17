@@ -36,4 +36,14 @@ describe('Blog app', function () {
       cy.get('.error').should('have.css', 'color', 'rgb(255, 0, 0)')
     })
   })
+
+  describe('When logged in', function () {
+    beforeEach(function () {
+      cy.login({ username: 'ttes', password: 'test123' })
+    })
+    it('A blog can be created', function () {
+      cy.contains('create blog').click()
+      cy.contains('Create new blog')
+    })
+  })
 })
