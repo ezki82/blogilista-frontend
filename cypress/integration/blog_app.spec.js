@@ -39,11 +39,32 @@ describe('Blog app', function () {
 
   describe('When logged in', function () {
     beforeEach(function () {
+      // login directly without ui
       cy.login({ username: 'ttes', password: 'test123' })
+
+      // create blog directly without ui
+      cy.createBlog({ author: 'Test Tester', title: 'Autocreated Blog #1', url: 'www.autoblog1.com' })
+      cy.createBlog({ author: 'Test Tester', title: 'Autocreated Blog #2', url: 'www.autoblog2.com' })
+      cy.createBlog({ author: 'Test Tester', title: 'Autocreated Blog #3', url: 'www.autoblog3.com' })
     })
+
     it('A blog can be created', function () {
+      cy.reload()
       cy.contains('create blog').click()
-      cy.contains('Create new blog')
+      cy.get('#title').type('Testing')
+      cy.get('#author').type('Test Tester')
+      cy.get('#url').type('www.testing.org')
+      cy.get('#submit').click()
+      cy.contains('Testing Test Tester')
+    })
+
+    it('A blog can be liked', function(){
+      cy.reload()
+      cy.contains('Autocreated Blog #2').parent().as('2ndBlog')
+      cy.get('@2ndBlog').contains('show details').click()
+      cy.contains('url:www.autoblog2.com').parent().as('2ndBlogShow')
+      cy.get('@2ndBlogShow').contains('like').click()
+      cy.get('@2ndBlogShow').contains('likes: 1')
     })
   })
 })

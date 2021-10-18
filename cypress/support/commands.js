@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -30,6 +31,17 @@ Cypress.Commands.add('login', ({ username, password }) => {
   }).then(response => {
     localStorage.setItem('loggedUser', JSON.stringify(response.body))
     cy.visit('http://localhost:3000')
+  })
+})
+
+Cypress.Commands.add('createBlog', ({ author, title, url }) => {
+  cy.request({
+    url: 'http://localhost:3003/api/blogs',
+    method: 'POST',
+    body: { author, title, url },
+    headers: {
+      'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedUser')).token}`
+    }
   })
 })
 
