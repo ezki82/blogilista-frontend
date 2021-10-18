@@ -1,3 +1,5 @@
+import { checkPropTypes } from "prop-types"
+
 describe('Blog app', function () {
   beforeEach(function () {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
@@ -52,10 +54,10 @@ describe('Blog app', function () {
       cy.createBlog({ author: 'Test Tester', title: 'Autocreated Blog #1', url: 'www.autoblog1.com' })
       cy.createBlog({ author: 'Test Tester', title: 'Autocreated Blog #2', url: 'www.autoblog2.com' })
       cy.createBlog({ author: 'Test Tester', title: 'Autocreated Blog #3', url: 'www.autoblog3.com' })
+      cy.reload()
     })
 
     it('A blog can be created', function () {
-      cy.reload()
       cy.contains('create blog').click()
       cy.get('#title').type('Testing')
       cy.get('#author').type('Test Tester')
@@ -65,7 +67,6 @@ describe('Blog app', function () {
     })
 
     it('A blog can be liked', function(){
-      cy.reload()
       cy.contains('Autocreated Blog #2').parent().as('2ndBlog')
       cy.get('@2ndBlog').contains('show details').click()
       cy.contains('url:www.autoblog2.com').parent().as('2ndBlogShow')
@@ -74,7 +75,6 @@ describe('Blog app', function () {
     })
 
     it('A blog can be removed', function(){
-      cy.reload()
       cy.contains('Autocreated Blog #2').parent().as('2ndBlog')
       cy.get('@2ndBlog').contains('show details').click()
       cy.contains('url:www.autoblog2.com').parent().as('2ndBlogShow')
@@ -83,16 +83,46 @@ describe('Blog app', function () {
     })
 
     it('A blog cannot be removed by another user', function(){
-      cy.reload()
       cy.get('#logout-button').click()
-      cy.get('#username').type('cdel')
-      cy.get('#password').type('cannot123')
-      cy.get('#login-button').click()
+      cy.login({ username: 'cdel', password: 'cannot123' })
       cy.contains('Cannot Delete logged in')
       cy.contains('Autocreated Blog #2').parent().as('2ndBlog')
       cy.get('@2ndBlog').contains('show details').click()
       cy.contains('url:www.autoblog2.com').parent().as('2ndBlogShow')
       cy.get('@2ndBlogShow').contains('remove').should('not.exist')
+    })
+
+    it('Blogs are ordered according to likes. A blog with most likes is on top', function(){
+      cy.contains('Autocreated Blog #3').parent().as('3rdBlog')
+      cy.get('@3rdBlog').contains('show details').click()
+      cy.contains('url:www.autoblog3.com').parent().as('3rdBlogShow')
+      cy.get('@3rdBlogShow').contains('like').click()
+      cy.get('@3rdBlogShow').contains('likes: 1')
+      cy.get('@3rdBlogShow').contains('like').click()
+      cy.get('@3rdBlogShow').contains('likes: 2')
+      cy.get('@3rdBlogShow').contains('like').click()
+      cy.get('@3rdBlogShow').contains('likes: 3')
+
+      cy.contains('Autocreated Blog #2').parent().as('2ndBlog')
+      cy.get('@2ndBlog').contains('show details').click()
+      cy.contains('url:www.autoblog2.com').parent().as('2ndBlogShow')
+      cy.get('@2ndBlogShow').contains('like').click()
+      cy.get('@2ndBlogShow').contains('likes: 1')
+      cy.get('@2ndBlogShow').contains('like').click()
+      cy.get('@2ndBlogShow').contains('likes: 2')
+
+      cy.contains('Autocreated Blog #1').parent().as('1stBlog')
+      cy.get('@1stBlog').contains('show details').click()
+      cy.contains('url:www.autoblog1.com').parent().as('1stBlogShow')
+      cy.get('@1stBlogShow').contains('like').click()
+      cy.get('@1stBlogShow').contains('likes: 1')
+      cy.reload()
+
+      cy.get('.blog').then( blogs => {
+        cy.wrap(blogs[0]).contains('Autocreated Blog #3')
+        cy.wrap(blogs[1]).contains('Autocreated Blog #2')
+        cy.wrap(blogs[2]).contains('Autocreated Blog #1')
+      })
     })
   })
 })
