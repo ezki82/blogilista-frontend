@@ -6,7 +6,13 @@ describe('Blog app', function () {
       username: 'ttes',
       password: 'test123'
     }
+    const secondUser = {
+      name: 'Cannot Delete',
+      username: 'cdel',
+      password: 'cannot123'
+    }
     cy.request('POST', 'http://localhost:3003/api/users/', user)
+    cy.request('POST', 'http://localhost:3003/api/users/', secondUser)
     cy.visit('http://localhost:3000')
   })
 
@@ -65,6 +71,28 @@ describe('Blog app', function () {
       cy.contains('url:www.autoblog2.com').parent().as('2ndBlogShow')
       cy.get('@2ndBlogShow').contains('like').click()
       cy.get('@2ndBlogShow').contains('likes: 1')
+    })
+
+    it('A blog can be removed', function(){
+      cy.reload()
+      cy.contains('Autocreated Blog #2').parent().as('2ndBlog')
+      cy.get('@2ndBlog').contains('show details').click()
+      cy.contains('url:www.autoblog2.com').parent().as('2ndBlogShow')
+      cy.get('@2ndBlogShow').contains('remove').click()
+      cy.contains('Autocreated Blog #2').should('not.exist')
+    })
+
+    it('A blog cannot be removed by another user', function(){
+      cy.reload()
+      cy.get('#logout-button').click()
+      cy.get('#username').type('cdel')
+      cy.get('#password').type('cannot123')
+      cy.get('#login-button').click()
+      cy.contains('Cannot Delete logged in')
+      cy.contains('Autocreated Blog #2').parent().as('2ndBlog')
+      cy.get('@2ndBlog').contains('show details').click()
+      cy.contains('url:www.autoblog2.com').parent().as('2ndBlogShow')
+      cy.get('@2ndBlogShow').contains('remove').should('not.exist')
     })
   })
 })

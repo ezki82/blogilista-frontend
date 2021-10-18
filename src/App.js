@@ -90,7 +90,7 @@ const App = () => {
 
   const logoutForm = () => (
     <form onSubmit={handleLogout}>
-      <button type="submit">logout</button>
+      <button id="logout-button" type="submit">logout</button>
     </form>
   )
 
