@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
+import { setInfoNotification } from './reducers/notificationReducer'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
@@ -8,11 +10,11 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [notificationMessage, setNotificationMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
+  const dispatch = useDispatch()
   const blogFormRef = useRef()
 
   const handleLogin = async (event) => {
@@ -25,10 +27,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setNotificationMessage({ type: 'error', content:'wrong credentials' })
-      setTimeout(() => {
-        setNotificationMessage(null)
-      }, 5000)
+      dispatch(setInfoNotification('wrong credentials', 5))
     }
   }
 
@@ -42,10 +41,7 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     const newBlog = await blogService.create(blogObject)
     setBlogs(blogs.concat(newBlog))
-    setNotificationMessage({ type: 'info', content:`A new blog ${newBlog.title} by ${newBlog.author} added` })
-    setTimeout(() => {
-      setNotificationMessage(null)
-    }, 5000)
+    dispatch(setInfoNotification(`A new blog ${newBlog.title} by ${newBlog.author} added`, 5))
   }
 
   const addLikeBlog = async (blogObject) => {
@@ -126,7 +122,7 @@ const App = () => {
 
   return (
     <div>
-      <Notification message={notificationMessage}/>
+      <Notification/>
       {user === null ?
         loginForm() :
         <div>
