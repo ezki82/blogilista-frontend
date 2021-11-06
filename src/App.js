@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { setInfoNotification } from './reducers/notificationReducer'
-import Blog from './components/Blog'
+import { createBlog } from './reducers/blogReducer'
+import Blogs from './components/Blogs'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { initializeBlogs } from './reducers/blogReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -37,14 +38,14 @@ const App = () => {
     setUser(null)
   }
 
-  const createBlog = async (blogObject) => {
+  const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     const newBlog = await blogService.create(blogObject)
-    setBlogs(blogs.concat(newBlog))
+    dispatch(createBlog(newBlog))
     dispatch(setInfoNotification(`A new blog ${newBlog.title} by ${newBlog.author} added`, 5))
   }
 
-  const addLikeBlog = async (blogObject) => {
+  /*   const addLikeBlog = async (blogObject) => {
     const likeAddedBlog = { ...blogObject, likes: blogObject.likes + 1 }
     await blogService.update(likeAddedBlog.id, likeAddedBlog)
     setBlogs(blogs.map((blog) => blog.id === blogObject.id ? likeAddedBlog : blog ))
@@ -56,7 +57,7 @@ const App = () => {
       await blogService.remove(blogObject.id)
       setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
     }
-  }
+  } */
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -93,25 +94,18 @@ const App = () => {
   const createNewBlogForm = () => (
     <Togglable buttonLabel='create blog' ref={blogFormRef}>
       <BlogForm
-        createBlog={createBlog}
+        createBlog={addBlog}
       />
     </Togglable>
   )
 
-  const blogForm = () => (
-    <div>
-      <h2>Blogs</h2>
-      {blogs.map(blog => <Blog key={blog.id} blog={blog} user={user} addLike={addLikeBlog} removeBlog={removeBlog} />)}
-    </div>
-  )
-
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs.sort((a, b) => b.likes - a.likes))
-    )
-  }, [])
+    // Get bloglist
+    blogService.getAll().then(blogs => {
+      dispatch(initializeBlogs(blogs))
+    })
 
-  useEffect(() => {
+    // Get userinfo from local storage
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
@@ -129,7 +123,7 @@ const App = () => {
           {logoutForm()}
           <p>{user.name} logged in</p>
           {createNewBlogForm()}
-          {blogForm()}
+          <Blogs/>
         </div>
       }
     </div>

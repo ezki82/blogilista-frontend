@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-const Blog = ({ blog, user, addLike, removeBlog }) => {
+const Blog = ({ blog, addLike, /*,user*/ removeBlog }) => {
 
   const blogStyle = {
     paddingTop: 10,
@@ -37,7 +37,7 @@ const Blog = ({ blog, user, addLike, removeBlog }) => {
           url:{blog.url} <br/>
           likes: {blog.likes} <button onClick={_addLike}>like</button> <br/>
           added by: {blog.user.name} <br/>
-          {blog.user.username === user.username ? <button onClick={_removeBlog}>remove</button> : <></>}
+          {blog.user.username === blog.user.username ? <button onClick={_removeBlog}>remove</button> : <></>}
         </p>
       </div>
     </div>
@@ -45,3 +45,4 @@ const Blog = ({ blog, user, addLike, removeBlog }) => {
 }
 
 export default Blog
+// line 40, uesr.username => blog.user.username temp change
