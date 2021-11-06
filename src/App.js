@@ -16,6 +16,7 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   const dispatch = useDispatch()
+
   const blogFormRef = useRef()
 
   const handleLogin = async (event) => {
@@ -38,26 +39,10 @@ const App = () => {
     setUser(null)
   }
 
-  const addBlog = async (blogObject) => {
-    blogFormRef.current.toggleVisibility()
-    const newBlog = await blogService.create(blogObject)
-    dispatch(createBlog(newBlog))
-    dispatch(setInfoNotification(`A new blog ${newBlog.title} by ${newBlog.author} added`, 5))
+  const addBlog = (blogObject) => {
+    dispatch(createBlog(blogObject))
+    dispatch(setInfoNotification(`A new blog ${blogObject.title} by ${blogObject.author} added`, 5))
   }
-
-  /*   const addLikeBlog = async (blogObject) => {
-    const likeAddedBlog = { ...blogObject, likes: blogObject.likes + 1 }
-    await blogService.update(likeAddedBlog.id, likeAddedBlog)
-    setBlogs(blogs.map((blog) => blog.id === blogObject.id ? likeAddedBlog : blog ))
-  }
-
-  const removeBlog = async (blogObject) => {
-    const confirm = window.confirm(`Remove blog ${blogObject.title} by ${blogObject.author}`)
-    if (confirm) {
-      await blogService.remove(blogObject.id)
-      setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
-    }
-  } */
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -101,9 +86,7 @@ const App = () => {
 
   useEffect(() => {
     // Get bloglist
-    blogService.getAll().then(blogs => {
-      dispatch(initializeBlogs(blogs))
-    })
+    dispatch(initializeBlogs())
 
     // Get userinfo from local storage
     const loggedUserJSON = window.localStorage.getItem('loggedUser')

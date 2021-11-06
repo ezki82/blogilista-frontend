@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
-const Blog = ({ blog, addLike, /*,user*/ removeBlog }) => {
+import { useDispatch } from 'react-redux'
+import { likeBlog, removeBlog } from '../reducers/blogReducer'
+const Blog = ({ blog }) => {
+
+  const dispatch = useDispatch()
 
   const blogStyle = {
     paddingTop: 10,
@@ -16,11 +20,11 @@ const Blog = ({ blog, addLike, /*,user*/ removeBlog }) => {
   }
 
   const _addLike = () => {
-    addLike(blog)
+    dispatch(likeBlog(blog))
   }
 
   const _removeBlog = () => {
-    removeBlog(blog)
+    dispatch(removeBlog(blog.id))
   }
 
   const hideDetailsVisible = { display: detailsVisible ? 'none' : '' }
