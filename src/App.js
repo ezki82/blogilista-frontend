@@ -1,42 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import { setInfoNotification } from './reducers/notificationReducer'
-import { createBlog } from './reducers/blogReducer'
+import { loginUser, logoutUser } from './reducers/userReducer'
 import Blogs from './components/Blogs'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import Notification from './components/Notification'
-import blogService from './services/blogs'
-import loginService from './services/login'
-import { initializeBlogs } from './reducers/blogReducer'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
 
   const dispatch = useDispatch()
-
   const blogFormRef = useRef()
+  const user = useSelector(state => state.user)
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem('loggedUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch (exception) {
-      dispatch(setInfoNotification('wrong credentials', 5))
-    }
+    dispatch(loginUser(username, password))
+    setUsername('')
+    setPassword('')
   }
 
   const handleLogout = (event) => {
     event.preventDefault()
-    window.localStorage.removeItem('loggedUser')
-    setUser(null)
+    dispatch(logoutUser())
   }
 
   const addBlog = (blogObject) => {
@@ -92,21 +81,20 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+      dispatch(loginUser(user))
     }
   }, [])
 
   return (
     <div>
-      <Notification/>
+      <Notification />
       {user === null ?
         loginForm() :
         <div>
           {logoutForm()}
           <p>{user.name} logged in</p>
           {createNewBlogForm()}
-          <Blogs/>
+          <Blogs />
         </div>
       }
     </div>
