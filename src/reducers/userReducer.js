@@ -6,6 +6,8 @@ const reducer = (state = null, action) => {
   switch (action.type) {
   case 'LOGIN_USER':
     return action.data
+  case 'RESTORE_USER':
+    return action.data
   case 'LOGOUT_USER':
     return null
   default:
@@ -28,6 +30,14 @@ export const loginUser = (username, password) => {
     }
   }
 }
+
+export const restoreUser = (user) => {
+  return {
+    type: 'RESTORE_USER',
+    data: user
+  }
+}
+
 
 export const logoutUser = () => {
   return async dispatch => {

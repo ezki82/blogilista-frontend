@@ -1,75 +1,29 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import { setInfoNotification } from './reducers/notificationReducer'
-import { loginUser, logoutUser } from './reducers/userReducer'
+import { restoreUser } from './reducers/userReducer'
 import Blogs from './components/Blogs'
 import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
+import LogoutForm from './components/LogoutForm'
 import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
 
   const dispatch = useDispatch()
   const blogFormRef = useRef()
   const user = useSelector(state => state.user)
-
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    dispatch(loginUser(username, password))
-    setUsername('')
-    setPassword('')
-  }
-
-  const handleLogout = (event) => {
-    event.preventDefault()
-    dispatch(logoutUser())
-  }
 
   const addBlog = (blogObject) => {
     dispatch(createBlog(blogObject))
     dispatch(setInfoNotification(`A new blog ${blogObject.title} by ${blogObject.author} added`, 5))
   }
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input
-          id="username"
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          id="password"
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button id="login-button" type="submit">login</button>
-    </form>
-  )
-
-  const logoutForm = () => (
-    <form onSubmit={handleLogout}>
-      <button id="logout-button" type="submit">logout</button>
-    </form>
-  )
-
   const createNewBlogForm = () => (
     <Togglable buttonLabel='create blog' ref={blogFormRef}>
-      <BlogForm
-        createBlog={addBlog}
-      />
+      <BlogForm createBlog={addBlog}/>
     </Togglable>
   )
 
@@ -81,7 +35,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      dispatch(loginUser(user))
+      dispatch(restoreUser(user))
     }
   }, [])
 
@@ -89,9 +43,9 @@ const App = () => {
     <div>
       <Notification />
       {user === null ?
-        loginForm() :
+        <LoginForm/> :
         <div>
-          {logoutForm()}
+          <LogoutForm/>
           <p>{user.name} logged in</p>
           {createNewBlogForm()}
           <Blogs />

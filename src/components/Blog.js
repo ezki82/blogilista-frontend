@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
 const Blog = ({ blog }) => {
 
+  const user = useSelector(state => state.user)
   const dispatch = useDispatch()
 
   const blogStyle = {
@@ -41,7 +42,7 @@ const Blog = ({ blog }) => {
           url:{blog.url} <br/>
           likes: {blog.likes} <button onClick={_addLike}>like</button> <br/>
           added by: {blog.user.name} <br/>
-          {blog.user.username === blog.user.username ? <button onClick={_removeBlog}>remove</button> : <></>}
+          {blog.user.username === user.username ? <button onClick={_removeBlog}>remove</button> : <></>}
         </p>
       </div>
     </div>
@@ -49,4 +50,3 @@ const Blog = ({ blog }) => {
 }
 
 export default Blog
-// line 40, uesr.username => blog.user.username temp change
