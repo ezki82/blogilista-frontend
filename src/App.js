@@ -1,31 +1,19 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
+import { Link, Route, Switch } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { initializeBlogs, createBlog } from './reducers/blogReducer'
-import { setInfoNotification } from './reducers/notificationReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 import { restoreUser } from './reducers/userReducer'
 import Blogs from './components/Blogs'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import LogoutForm from './components/LogoutForm'
-import Togglable from './components/Togglable'
 import Notification from './components/Notification'
+import UserDetails from './components/UserDetails'
 
 const App = () => {
 
   const dispatch = useDispatch()
-  const blogFormRef = useRef()
   const user = useSelector(state => state.user)
-
-  const addBlog = (blogObject) => {
-    dispatch(createBlog(blogObject))
-    dispatch(setInfoNotification(`A new blog ${blogObject.title} by ${blogObject.author} added`, 5))
-  }
-
-  const createNewBlogForm = () => (
-    <Togglable buttonLabel='create blog' ref={blogFormRef}>
-      <BlogForm createBlog={addBlog}/>
-    </Togglable>
-  )
 
   useEffect(() => {
     // Get bloglist
@@ -41,16 +29,26 @@ const App = () => {
 
   return (
     <div>
-      <Notification />
-      {user === null ?
-        <LoginForm/> :
-        <div>
-          <LogoutForm/>
-          <p>{user.name} logged in</p>
-          {createNewBlogForm()}
+      <div>
+        <Notification />
+        {user === null ?
+          <LoginForm /> :
+          <div>
+            <Link className='link' to="/users">users</Link>
+            <Link className='link' to="/blogs">blogs</Link>
+            <p>{user.name} logged in</p>
+            <LogoutForm />
+          </div>}
+      </div>
+      <Switch>
+        <Route path='/users'>
+          <UserDetails />
+        </Route>
+        <Route path='/blogs'>
           <Blogs />
-        </div>
-      }
+          <BlogForm />
+        </Route>
+      </Switch>
     </div>
   )
 }
