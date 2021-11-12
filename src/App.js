@@ -11,16 +11,22 @@ import LogoutForm from './components/LogoutForm'
 import Notification from './components/Notification'
 import User from './components/User'
 import Users from './components/Users'
+import Blog from './components/Blog'
 
 const App = () => {
 
   const dispatch = useDispatch()
   const user = useSelector(state => state.user)
   const allUsers = useSelector(state => state.allUsers)
+  const allBlogs = useSelector(state => state.blog)
 
   // Match id parameter to corresponding user
-  const match = useRouteMatch('/users/:id')
-  const userMatch = match ? allUsers.find(user => user.id === match.params.id) : null
+  const u_match = useRouteMatch('/users/:id')
+  const userMatch = u_match ? allUsers.find(user => user.id === u_match.params.id) : null
+
+  // Match id parameter to corresponding blog
+  const b_match = useRouteMatch('/blogs/:id')
+  const blogMatch = b_match ? allBlogs.find(blog => blog.id === b_match.params.id) : null
 
   useEffect(() => {
 
@@ -57,6 +63,9 @@ const App = () => {
         </Route>
         <Route path='/users'>
           <Users />
+        </Route>
+        <Route path='/blogs/:id'>
+          <Blog blog={blogMatch}/>
         </Route>
         <Route path='/blogs'>
           <Blogs />
