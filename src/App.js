@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react'
-import { Link, Route, Switch, useRouteMatch } from 'react-router-dom'
+import { Link, Route, Switch, useRouteMatch, useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogReducer'
-import { restoreUser } from './reducers/userReducer'
+import { logoutUser, restoreUser } from './reducers/userReducer'
 import { initializeUsers } from './reducers/allUsersReducer'
 import Blogs from './components/Blogs'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
-import LogoutForm from './components/LogoutForm'
 import Notification from './components/Notification'
 import User from './components/User'
 import Users from './components/Users'
@@ -16,6 +15,7 @@ import Blog from './components/Blog'
 const App = () => {
 
   const dispatch = useDispatch()
+  const history = useHistory()
   const user = useSelector(state => state.user)
   const allUsers = useSelector(state => state.allUsers)
   const allBlogs = useSelector(state => state.blog)
@@ -44,28 +44,32 @@ const App = () => {
     }
   }, [])
 
+  // Logout user and redirect to root
+  const _logoutUser = () => {
+    dispatch(logoutUser())
+    history.push('/')
+  }
+
   return (
     <div>
       <div>
         <Notification />
         {user === null ?
           <LoginForm /> :
-          <div>
+          <div className='navbar'>
             <Link className='link' to="/users">users</Link>
-            <Link className='link' to="/blogs">blogs</Link>
-            <p>{user.name} logged in </p>
-            <LogoutForm />
+            <Link className='link' to="/blogs">blogs</Link> {user.name} logged in <button onClick={_logoutUser}>logout</button>
           </div>}
       </div>
       <Switch>
         <Route path='/users/:id'>
-          <User user={userMatch}/>
+          <User user={userMatch} />
         </Route>
         <Route path='/users'>
           <Users />
         </Route>
         <Route path='/blogs/:id'>
-          <Blog blog={blogMatch}/>
+          <Blog blog={blogMatch} />
         </Route>
         <Route path='/blogs'>
           <Blogs />
