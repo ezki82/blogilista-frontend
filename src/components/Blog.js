@@ -19,6 +19,10 @@ const Blog = ({ blog }) => {
       <Link to={blog.url}>{blog.url}</Link>
       <p>{blog.likes} likes <button onClick={_addLike}>like</button><br></br>
       added by {blog.user.name}</p>
+      <h3>comments</h3>
+      <ul>
+        {blog.comments.map((c, index) => <li key={index}>{c}</li>)}
+      </ul>
     </div>
   )
 }
