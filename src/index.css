@@ -1,9 +1,44 @@
+  :root {
+    --hsyVaaleaTurkoosi: #64c3cd;
+    --hsyKeskiTurkoosi: #00aaa3;
+    --hsyTummaTurkoosi: #007377;
+    --hsyMusta: #2c2a29;
+    --hsyPinkki: #d8318a;
+    --hsyPunainen: #bd3429;
+    --hsyTummanOranssi: #be4d00;
+    --hsyOranssi: #ea7600;
+    --hsyKeltainen: #f9d800;
+    --hsyRuskea: #4e3629;
+    --hsyTummanVihrea: #006431;
+    --hsyKeskiVihrea: #009f4d;
+    --hsyVaaleanVihrea: #74aa50;
+    --hsyVioletti: #814494;
+    --hsyTummanSininen: #006aa7;
+    --hsyVaaleanSininen: #9bcbeb;
+  }
+
+  body {
+    background-color: var(--hsyKeskiTurkoosi);
+    font-family: Georgia, 'Times New Roman', Times, serif;
+  }
+
   .h1 {
     color: green;
     font-style: italic;
   }
+
+  .button {
+    color: var(--hsyTummaTurkoosi);
+    border-radius: 5px;
+    font-weight: bolder;
+  }
+
+  .input {
+    border-radius: 5px;
+  }
   
-  .blog {
+  .form {
+    background-color: var(--hsyKeskiTurkoosi);
     color: rgb(0, 0, 0);
     font-size: 15px;
   }
@@ -34,6 +69,6 @@
   }
 
   .navbar {
-    background:rgb(196, 188, 188);
+    background:var(--hsyKeskiTurkoosi);
     padding: 5px
   }
