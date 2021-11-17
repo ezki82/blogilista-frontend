@@ -72,7 +72,7 @@ const BlogForm = () => {
             onChange={handleUrlChange}
           />
         </div>
-        <button id="submit" type="submit">create</button>
+        <button id="submit" className='button' type="submit">create</button>
       </form>
     </Togglable>
   )
